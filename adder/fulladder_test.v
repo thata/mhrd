@@ -1,6 +1,6 @@
 // FULLADDER testbench
 // iverilog -g 2012 fulladder_test.v fulladder.v halfadder.v xor.v nand.v and.v or.v not.v && ./a.out
-module halfadder_test;
+module fulladder_test;
     reg carryIn, in1, in2;
     wire out, carryOut;
 
