@@ -1,10 +1,11 @@
-module MUX(
-    input sel, in1, in2,
+module MUX4B(
+    input sel, 
+    input [3:0] in1, in2,
     output out
 );
 
-    logic enable_in1, enable_in2;
-    logic and1_out, and2_out;
+    wire enable_in1;
+    wire and1_out, and2_out;
 
     NOT not1(sel, enable_in1);
     AND and1(in1, enable_in1, and1_out);

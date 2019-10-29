@@ -1,8 +1,8 @@
-// MUX testbench
+// MUX4B testbench
 // iverilog -g 2012 -s mux_test *.v && ./a.out 
-module mux_test;
-    logic sel, in1, in2;
-    logic out;
+module mux4b_test;
+    reg sel, in1, in2;
+    wire out;
 
     MUX dut(sel, in1, in2, out);
 
