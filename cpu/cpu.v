@@ -6,9 +6,11 @@ module CPU(
 );
     // parts
     ALU16B alu(
-        .in1(ar),
-        .in2(ar),
-        .out(result)
+        .in1(aluIn1Sel),
+        .in2(aluIn2Sel),
+        .opCode(opCode),
+        .out(result),
+        .zero(aluZero)
     );
 
     DECODER decoder(
@@ -33,18 +35,38 @@ module CPU(
     logic [1:0] op2;
     logic [3:0] opCode;
     logic [14:0] constant;
+    logic [15:0] aluIn1Sel, aluIn2Sel;
+    logic aluZero;
 
     assign dataAddr = mr;
     assign instrAddr = pc;
-    assign write = 0;
-    assign loadM_out = loadM;
+    assign write = loadD;
+    assign aluIn1Sel = (op1 == 1) 
+                       ? {{11{constant[4]}}, constant[4:0]}
+                       : ar;
+    assign aluIn2Sel = (op2 == 2'b00)
+                       ? {{11{constant[4]}}, constant[4:0]}
+                       : (op2 == 2'b01)
+                         ? ar
+                         : (op2 == 2'b10)
+                           ? mr
+                           : data;
 
     always_ff @(posedge clk) begin
         if (reset)
             pc <= 16'h0000;
+        else if (jmpIfZ && aluZero)
+            pc <= mr;
         else
             pc <= pc + 1;
 
-        if (loadM) mr <= 16'hFFFF;
+        if (loadM) begin
+            if (cToM)
+                mr <= constant;
+            else
+                mr <= result;
+        end
+
+        if (loadA) ar <= result;
     end
 endmodule
